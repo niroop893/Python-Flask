@@ -60,13 +60,15 @@
             <tbody>
                 {% for Users in all_users %}
                 <tr>
-                    <th scope="row">1</th>
+                    <th scope="row">{{Users.sno}}</th>
                     <td>{{Users.username}}</td>
                     <td>{{Users.email}}</td>
                     <td>{{Users.password}}</td>
                   </tr>
                     
-                {% endfor %}
+                  {% else %}
+                  <p>No users found.</p>
+              {% endfor %}4
               
             
             </tbody>

@@ -16,7 +16,7 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="#">Users</a>
+            <a class="navbar-brand" href="/">Users</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                 aria-label="Toggle navigation">
@@ -45,10 +45,10 @@
 
     </nav>
     <div class="container my-3">
-        <form>
+        <form action="/register" method="POST">
             <div class="mb-3">
-                <label for="name" class="form-label">Name</label>
-                <input type="text" class="form-control" id="name" name="name" aria-describedby="emailHelp">
+                <label for="username" class="form-label">UserName</label>
+                <input type="text" class="form-control" id="username" name="username" aria-describedby="emailHelp">
             </div>
             <div class="mb-3">
                 <label for="email" class="form-label">Email address</label>
@@ -58,10 +58,7 @@
                 <label for="password" class="form-label">Password</label>
                 <input type="password" class="form-control" id="password" name="password">
             </div>
-            <div class="mb-3 form-check">
-                <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                <label class="form-check-label" for="exampleCheck1">Check me out</label>
-            </div>
+     
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
     </div>
@@ -81,7 +78,7 @@
             <tbody>
                 {% for Users in all_users %}
                 <tr>
-                    <th scope="row">1</th>
+                    <th scope="row">{{Users.sno}}</th>
                     <td>{{Users.username}}</td>
                     <td>{{Users.email}}</td>
                     <td>{{Users.password}}</td>

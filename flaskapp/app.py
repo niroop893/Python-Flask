@@ -1,19 +1,16 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from datetime import datetime
-import sqlite3
-
+import os
 
 app = Flask(__name__, template_folder='templates')
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///database.db"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
-
-import os
-print("Template Folder Path:", os.path.join(os.getcwd(), 'templates'))
 app.secret_key = "python-flask"  # Change this to a random secret key
 
+db = SQLAlchemy(app)
+
+# Define the Users model
 class Users(db.Model):
     sno = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(200), nullable=False)
@@ -22,22 +19,14 @@ class Users(db.Model):
     date = db.Column(db.DateTime, default=datetime.utcnow)
 
     def __repr__(self):
-        return f"{self.sno} -{self.username}"
+        return f"{self.sno} - {self.username}"
 
+# Create all tables
 with app.app_context():
     db.create_all()
-    
+    print(Users.query.all())
 
-    
-
-
-# Function to connect to the SQLite database
-def connect_db():
-    conn = sqlite3.connect('database.db')
-    conn.execute('CREATE TABLE USERS IF NOT EXISTS users (id INTEGER PRIMARY KEY, username TEXT, email TEXT, password TEXT)')
-    conn.commit()
-    return conn
-
+# Routes
 @app.route('/about', methods=['GET', 'POST'])
 def About():
     return render_template('about.html')
@@ -50,70 +39,101 @@ def Home():
 def Index():
     return render_template('index.html')
 
-@app.route('/profile', methods=['GET', 'POST'])
-def Profile():
-    return render_template('profile.html')
-
 @app.route('/', methods=['GET', 'POST'])
 def hello_world():
-    details = Users(username="Jolly",email="Jian@test.com",password="pass123")
-    db.session.add(details)
-    db.session.commit()
-    all_users = details.query.all()
-    print(all_users)
+    if request.method == 'POST':
+        # Retrieve form data
+        username = request.form.get('username')
+        password = request.form.get('password')
+        email = request.form.get('email')
+
+        # Debugging output to verify data
+        print(f"Form submitted: username={username}, email={email}, password={password}")
+
+        # Check that all fields are provided
+        if not username or not email or not password:
+            flash("All fields are required!")
+            return redirect(url_for('signup'))
+
+        # Create and add the new user to the database
+        new_user = Users(username=username, email=email, password=password)
+
+        try:
+            db.session.add(new_user)
+            db.session.commit()
+            print("User added to the database.")
+        except Exception as e:
+            db.session.rollback()
+            print(f"Error committing to the database: {e}")
+            flash("An error occurred. Please try again.")
+            return redirect(url_for('signup'))
+
+    # Retrieve all users to display on the page
+    all_users = Users.query.all()
+
     return render_template('index.html', all_users=all_users)
-# Route for signing up
-# Route for signing up
+
 @app.route('/register', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        email = request.form['email']  # Add email field
-        conn = connect_db()
-        cursor = conn.cursor()
-        cursor.execute('INSERT INTO USERS (username, email, password) VALUES (?, ?, ?)', (username, password, email))  # Include email in INSERT statement
-        conn.commit()
-        conn.close()
-        return redirect(url_for('login'))
-    return render_template('register.html')
+        # Retrieve form data
+        username = request.form.get('username')
+        password = request.form.get('password')
+        email = request.form.get('email')
 
-# Route for logging in
-# Route for logging in
+        # Debugging output to verify data
+        print(f"Form submitted: username={username}, email={email}, password={password}")
+
+        # Check that all fields are provided
+        if not username or not email or not password:
+            flash("All fields are required!")
+            return redirect(url_for('signup'))
+
+        # Create and add the new user to the database
+        new_user = Users(username=username, email=email, password=password)
+
+        try:
+            db.session.add(new_user)
+            db.session.commit()
+            print("User added to the database.")
+        except Exception as e:
+            db.session.rollback()
+            print(f"Error committing to the database: {e}")
+            flash("An error occurred. Please try again.")
+            return redirect(url_for('signup'))
+
+    # Retrieve all users to display on the page
+    all_users = Users.query.all()
+    return render_template('index.html', all_users=all_users)
+
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         username = request.form['username']
         email = request.form['email']
         password = request.form['password']
-        conn = connect_db()
-        cursor = conn.cursor()
-        cursor.execute('SELECT * FROM USERS WHERE username = ? AND email = ? AND password = ?', (username, email, password))
-        user = cursor.fetchone()
-        conn.close()
+        
+        # Query user with SQLAlchemy instead of direct SQLite connection
+        user = Users.query.filter_by(username=username, email=email, password=password).first()
+        
         if user:
             session['username'] = username
-            return redirect(url_for('user_profile'))  # Redirect to user profile page
+            return redirect(url_for('profile'))
+    
     return render_template('login.html')
 
-# Route for logging out
 @app.route('/logout')
 def logout():
     session.pop('username', None)
     return redirect(url_for('login'))
 
-# Route for user profile
 @app.route('/profile')
 def profile():
-    if 'username' in session:
-        conn = connect_db()
-        cursor = conn.cursor()
-        cursor.execute('SELECT * FROM USERS')
-        users = cursor.fetchall()
-        conn.close()
-        print(users)
-        return render_template('profile.html', users=users)
-    return redirect(url_for('login'))
+    # Query all users and render profile template
+    all_users = Users.query.all()
+    return render_template('profile.html', all_users=all_users)
 
 if __name__ == '__main__':
     app.run(debug=True, port=3000)
