@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %} Products {% endblock title %}
+{% block body %}
+
+<div class="container my-3 d-flex justify-content-center">
+    <form action="/products" method="POST" class="w-50 p-3 border rounded" style="background-color: #f8f9fa;">
+        <div class="mb-3">
+            <label for="type" class="form-label">Type</label>
+            <input type="text" class="form-control" id="type" name="type">
+        </div>
+        <div class="mb-3">
+            <label for="product" class="form-label">Products</label>
+            <input type="text" class="form-control" id="product" name="product">
+        </div>
+        <div class="mb-3">
+            <label for="price" class="form-label">Price</label>
+            <input type="number" class="form-control" id="price" name="price">
+        </div>
+        <button type="submit" class="btn btn-dark">Submit</button>
+    </form>
+</div>
+
+<div class="container my-3">
+    <h2>Products List</h2>
+
+    {% if all_products|length == 0 %}
+    <div class="alert alert-dark" role="alert">
+        Please add Products
+    </div>
+    {% else %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">S.No</th>
+                <th scope="col">Type</th>
+                <th scope="col">Product</th>
+                <th scope="col">Price</th>
+                <th scope="col">Date</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in all_products %}
+            <tr>
+                <th scope="row">{{ loop.index }}</th>
+                <td>{{ product.type }}</td>
+                <td>{{ product.product }}</td>
+                <td>{{ product.price }}</td>
+                <td>{{ product.date }}</td>
+                <td>
+                    <a href="/update/{{ product.sno }}" class="btn btn-outline-primary mx-2">Update</a>
+                    <form action="/delete/{{ product.sno }}" method="POST" style="display:inline;">
+                        <button type="submit" class="btn btn-outline-danger mx-2">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+</div>
+
+{% endblock body %}

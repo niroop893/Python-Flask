@@ -26,14 +26,25 @@ with app.app_context():
     db.create_all()
     print(Users.query.all())
 
+class Products(db.Model):
+    sno = db.Column(db.Integer, primary_key=True)
+    type = db.Column(db.String(200), nullable=False)
+    product = db.Column(db.String(200), nullable=False)
+    price = db.Column(db.Float, nullable=False)
+    date = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def __repr__(self):
+        return f"{self.sno} - {self.product}"
+
+# Create all tables
+with app.app_context():
+    db.create_all()
+    print(Products.query.all())
+
 # Routes
 @app.route('/about', methods=['GET', 'POST'])
 def About():
     return render_template('about.html')
-
-@app.route('/home', methods=['GET', 'POST'])
-def Home():
-    return render_template('home.html')
 
 @app.route('/index', methods=['GET', 'POST'])
 def Index():
@@ -52,7 +63,7 @@ def hello_world():
 
         # Check that all fields are provided
         if not username or not email or not password:
-            flash("All fields are required!")
+            print("All fields are required!")
             return redirect(url_for('signup'))
 
         # Create and add the new user to the database
@@ -65,7 +76,7 @@ def hello_world():
         except Exception as e:
             db.session.rollback()
             print(f"Error committing to the database: {e}")
-            flash("An error occurred. Please try again.")
+            print("An error occurred. Please try again.")
             return redirect(url_for('signup'))
 
     # Retrieve all users to display on the page
@@ -86,7 +97,7 @@ def signup():
 
         # Check that all fields are provided
         if not username or not email or not password:
-            flash("All fields are required!")
+            print("All fields are required!")
             return redirect(url_for('signup'))
 
         # Create and add the new user to the database
@@ -99,30 +110,97 @@ def signup():
         except Exception as e:
             db.session.rollback()
             print(f"Error committing to the database: {e}")
-            flash("An error occurred. Please try again.")
+            print("An error occurred. Please try again.")
             return redirect(url_for('signup'))
 
     # Retrieve all users to display on the page
     all_users = Users.query.all()
     return render_template('index.html', all_users=all_users)
 
+@app.route('/products', methods=['GET', 'POST'])
+def manage_products():
+    if request.method == 'POST':
+        type = request.form.get('type')
+        product = request.form.get('product')
+        price = request.form.get('price')
+
+        if type and product and price:
+            new_product = Products(type=type, product=product, price=float(price))
+            try:
+                db.session.add(new_product)
+                db.session.commit()
+            except Exception as e:
+                db.session.rollback()
+                print(f"Error: {e}")
+                return redirect(url_for('manage_products'))
+
+    # Retrieve all products for display
+    all_products = Products.query.all()
+    return render_template('products.html', all_products=all_products)
+    
+# Update user route
+@app.route('/update/<int:sno>', methods=['GET', 'POST'])
+def update_user(sno):
+    user = Users.query.get_or_404(sno)
+
+    if request.method == 'POST':
+        # Get updated data from form
+        user.username = request.form['username']
+        user.email = request.form['email']
+        user.password = request.form['password']
+
+        try:
+            db.session.commit()  # Save changes to the database
+            print("User updated successfully!")
+            return redirect(url_for('signup'))  # Redirect to main user list
+        except Exception as e:
+            db.session.rollback()
+            print(f"Error updating user: {e}")
+            return redirect(url_for('update_user', sno=sno))
+
+    return render_template('update.html', user=user)
+
+# Delete user route
+@app.route('/delete/<int:sno>', methods=['POST'])
+def delete_user(sno):
+    user = Users.query.filter_by(sno=sno).first()
+
+    try:
+        db.session.delete(user)
+        db.session.commit()
+        print("User deleted successfully!")
+        return redirect(url_for('signup'))  # Redirect to main user list
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error deleting user: {e}")
+        return redirect(url_for('signup'))
 
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        username = request.form['username']
         email = request.form['email']
         password = request.form['password']
         
-        # Query user with SQLAlchemy instead of direct SQLite connection
-        user = Users.query.filter_by(username=username, email=email, password=password).first()
+        # Query user with SQLAlchemy
+        user = Users.query.filter_by(email=email, password=password).first()
         
         if user:
-            session['username'] = username
-            return redirect(url_for('profile'))
+            session['username'] = user.username  # Set session
+            return redirect(url_for('home'))  # Redirect to home page if login successful
+        else:
+            print("Login failed: Invalid email or password")
+            return redirect(url_for('login'))  # Redirect back to login if authentication fails
     
     return render_template('login.html')
+
+@app.route('/home', methods=['GET', 'POST'])
+def home():
+    username = session.get('username')
+    if not username:
+        return redirect(url_for('login'))  # Redirect to login if not logged in
+    return render_template('home.html', username=username)
+
 
 @app.route('/logout')
 def logout():

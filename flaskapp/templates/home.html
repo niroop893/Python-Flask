@@ -14,7 +14,7 @@
 </head>
 
 <body>
-    <h2>Welcome, {{ username }}!</h2>
+  
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
             <a class="navbar-brand" href="#">Users</a>
@@ -31,65 +31,67 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/about">About</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/login">Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/register">SignUp</a>
-                    </li>
-
-
+                    
+                    <!-- Show Login and SignUp if not logged in, Logout if logged in -->
+                    {% if session.get('username') %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="/logout">Logout</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="/login">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/register">SignUp</a>
+                        </li>
+                    {% endif %}
                 </ul>
             </div>
-
         </div>
-
     </nav>
+    
+    <h2>Welcome, {{ username }}!</h2>
     <div class="row row-cols-1 row-cols-md-3 g-4">
         <div class="col">
             <div class="card" style="width: 18rem;">
-                <img src="../static/mountain.jpg" class="card-img-top" alt="...">
+                <img src="../static/mixer.jpg" class="card-img-top" alt="...">
                 <div class="card-body">
-                    <h5 class="card-title">Card title</h5>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-                        card's content.</p>
-                    <a href="#" class="btn btn-primary">Go somewhere</a>
+                    <h5 class="card-title">Kitchen Mixers</h5>
+                    <p class="card-text">Blend with cool Mixers</p>
+                    <a href="https://www.google.com/aclk?sa=l&ai=DChcSEwitxsjPg9eJAxW_yjwCHVylKGwYABAHGgJzZg&co=1&ase=2&gclid=Cj0KCQiAlsy5BhDeARIsABRc6ZtuvX2zcWDnWDgPPd9z3BE3UEslaDOYdcKLyRTPoWGrlacxoXmfFRwaAlVmEALw_wcB&sig=AOD64_2BWYfaKtFkojM8MEMrSgwZbZZEYw&ctype=5&q=&nis=4&ved=2ahUKEwimisTPg9eJAxU5xjgGHQtlLN0Q9aACKAB6BAgHECc&adurl=" target="_blank" class="btn btn-primary">Check Out</a>
                 </div>
                 </div>
             </div>
 
             <div class="col">
                 <div class="card" style="width: 18rem;">
-                    <img src="../static/mountain.jpg" class="card-img-top" alt="...">
+                    <img src="../static/shirts.jpg" class="card-img-top" alt="...">
                     <div class="card-body">
-                        <h5 class="card-title">Card title</h5>
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of
-                            the card's content.</p>
-                        <a href="#" class="btn btn-primary">Go somewhere</a>
+                        <h5 class="card-title">Mens & Womens Shirts</h5>
+                        <p class="card-text">All size mens and womens t-shirts.</p>
+                        <a href="https://www.googleadservices.com/pagead/aclk?sa=L&ai=DChcSEwirkeXB9NaJAxUqo2YCHYrTMKkYABAPGgJzbQ&co=1&ase=2&gclid=Cj0KCQiAlsy5BhDeARIsABRc6ZskyCdTCwXmgcJTqSwzZwlq1fh30omPfsbTgbiT2LC4hhEmDLBhOe4aAgYLEALw_wcB&ohost=www.google.com&cid=CAESVuD2abIy0O2ayorOmiiggssWu7MenyzK2xFy2E3m8-gKvFYpHqxDeA3XMRSgoosUyFnrm8Nlho7IXuSKd7ae0bwd66YRle6ejCBqR5WWBuZ3kULgZcfy&sig=AOD64_0jEHSt7d0LXjH6uXzeE3SriNsfmA&q&nis=4&adurl&ved=2ahUKEwjy0d3B9NaJAxUExzgGHUR9E6oQ0Qx6BAgNEAE" target="_blank" class="btn btn-primary">Check Out</a>
                     </div>
                     </div>
                 </div>
 
                 <div class="col">
                     <div class="card" style="width: 18rem;">
-                        <img src="../static/mountain.jpg" class="card-img-top" alt="...">
+                        <img src="../static/shoes.jpg" class="card-img-top" alt="...">
                         <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk
-                                of the card's content.</p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                            <h5 class="card-title">Shoes</h5>
+                            <p class="card-text">Shoes for both men and women.</p>
+                            <a href="https://www.google.com/aclk?sa=l&ai=DChcSEwiste_1_taJAxVPn0sFHahzNC8YABABGgJzZg&co=1&ase=2&gclid=Cj0KCQiAlsy5BhDeARIsABRc6Ztn04SGp5bdAQwjZ4Y-I4hFaYPpyesRyom6VbG_U3qcTbeB0zca2WoaApo2EALw_wcB&sig=AOD64_3w9g_xEAftvzF1EcxsPDIXHpzmFw&ctype=5&q=&nis=4&ved=2ahUKEwiJs-r1_taJAxWT3jgGHSn3H4QQ9aACKAB6BAgGEA8&adurl=" target="_blank" class="btn btn-primary">Check Out</a>
                         </div>
                     </div>
                 </div>
 
                 <div class="col">
                     <div class="card" style="width: 18rem;">
-                        <img src="../static/mountain.jpg" class="card-img-top" alt="...">
+                        <img src="../static/tv.jpg" class="card-img-top" alt="...">
                         <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk
-                                of the card's content.</p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                            <h5 class="card-title">Television</h5>
+                            <p class="card-text">Television Home Theater.</p>
+                            <a href="https://www.google.com/aclk?sa=l&ai=DChcSEwjJ_cj6_9aJAxVcK4MDHTbTKbcYABABGgJzZg&co=1&ase=2&gclid=Cj0KCQiAlsy5BhDeARIsABRc6ZtGayvzoovMYJ0ST9EZ3Z4G_TB_8Ktdt7VcSvt08nrjokD25ym1ZgIaAk6DEALw_wcB&sig=AOD64_3outvG0PTYtQsTi8DkhYzccY0JXQ&ctype=5&q=&nis=4&ved=2ahUKEwiZqsT6_9aJAxVJwTgGHXhkAroQ9aACKAB6BAgFEA8&adurl=" target="_blank" class="btn btn-primary">Check Out</a>
                         </div>
                     </div>
                     </div>
@@ -97,12 +99,11 @@
 
                 <div class="col">
                     <div class="card" style="width: 18rem;">
-                        <img src="../static/mountain.jpg" class="card-img-top" alt="...">
+                        <img src="../static/fridge.jpg" class="card-img-top" alt="...">
                         <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk
-                                of the card's content.</p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                            <h5 class="card-title">Fridge</h5>
+                            <p class="card-text">Cool Refrigerators</p>
+                            <a href="https://www.google.com/aclk?sa=l&ai=DChcSEwiPxfeIgteJAxVvpGYCHdFwCg0YABABGgJzbQ&co=1&ase=2&gclid=Cj0KCQiAlsy5BhDeARIsABRc6ZuGtaw1e-vqQox1RM9yyEz_xe_Rha2DTBdMiCRzv3da0YQQoGpAJYAaApzNEALw_wcB&sig=AOD64_2C_L9iFWpwHMIXYAh1u7g6srrv_g&ctype=5&q=&nis=4&ved=2ahUKEwjp_fGIgteJAxXK4TgGHfFxAd8Q9aACKAB6BAgDEA8&adurl=" target="_blank" class="btn btn-primary">Cool Checkout</a>
                         </div>
                     </div>
                     </div>
@@ -110,12 +111,11 @@
 
                 <div class="col">
                     <div class="card" style="width: 18rem;">
-                        <img src="../static/mountain.jpg" class="card-img-top" alt="...">
+                        <img src="../static/ac.jpg" class="card-img-top" alt="...">
                         <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk
-                                of the card's content.</p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                            <h5 class="card-title">Air-Conditioners</h5>
+                            <p class="card-text">Chill Bill AC</p>
+                            <a href="https://www.google.com/aclk?sa=l&ai=DChcSEwje96jEgteJAxUup2YCHSB6AskYABADGgJzbQ&co=1&ase=2&gclid=Cj0KCQiAlsy5BhDeARIsABRc6ZsxpgJes2c8h0fhnWsh0vkbiKdUIVV_UJiE8GJmASclkHybA4bFKmoaAqHIEALw_wcB&sig=AOD64_3J2-IKb3zzosLp9BeozBcaZHVLDA&ctype=5&q=&nis=4&ved=2ahUKEwj3m6TEgteJAxXWzjgGHXTuGOkQ9aACKAB6BAgCEBc&adurl=" target="_blank" class="btn btn-primary">Go somewhere</a>
                         </div>
                     </div>
                 </div>
@@ -123,24 +123,22 @@
 
                 <div class="col">
                     <div class="card" style="width: 18rem;">
-                        <img src="../static/mountain.jpg" class="card-img-top" alt="...">
+                        <img src="../static/fans.jpg" class="card-img-top" alt="...">
                         <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk
-                                of the card's content.</p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                            <h5 class="card-title">Standing Fans</h5>
+                            <p class="card-text">Standing Fans.</p>
+                            <a href="https://www.google.com/imgres?q=fans%20amazon&imgurl=https%3A%2F%2Fm.media-amazon.com%2Fimages%2FI%2F71XJ6NgY1KL.jpg&imgrefurl=https%3A%2F%2Fwww.amazon.in%2FLasko-1827-Adjustable-Elegance-Performance%2Fdp%2FB00FXOFM6U&docid=ooo4axEE6qxgSM&tbnid=X9I2uQVQP1hSYM&vet=12ahUKEwjZm9GDg9eJAxUfi2MGHZX2L9sQM3oECBsQAA..i&w=2000&h=2000&hcb=2&ved=2ahUKEwjZm9GDg9eJAxUfi2MGHZX2L9sQM3oECBsQAA" target="_blank" class="btn btn-primary">Go somewhere</a>
                         </div>
                     </div>
                 </div>
 
                 <div class="col">
                     <div class="card" style="width: 18rem;">
-                        <img src="../static/mountain.jpg" class="card-img-top" alt="...">
+                        <img src="../static/oven.jpg" class="card-img-top" alt="...">
                         <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk
-                                of the card's content.</p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                            <h5 class="card-title">Microwave Ovens</h5>
+                            <p class="card-text">Quick heating in Microwave Ovens.</p>
+                            <a href="https://www.google.com/aclk?sa=l&ai=DChcSEwiv1NiYhNeJAxUag0sFHYr-LPcYABABGgJzZg&co=1&ase=2&gclid=Cj0KCQiAlsy5BhDeARIsABRc6ZuWn1POoTdlDHWSDKYSWsmmhwZwbMyjtI-EMOS1pJ4An-BIlBBgOhMaAvjWEALw_wcB&sig=AOD64_2R0ORzoSKZq60JFsxew72tNvBc8w&ctype=5&q=&nis=4&ved=2ahUKEwi0j9SYhNeJAxXLzTgGHengJg0Q9aACKAB6BAgCEA8&adurl=" target="_blank" class="btn btn-primary">Ovens Check Out</a>
                         </div>
                     </div>
                 </div>
