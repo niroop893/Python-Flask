@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 import os
@@ -131,13 +131,13 @@ def manage_products():
                 db.session.commit()
             except Exception as e:
                 db.session.rollback()
-                print(f"Error: {e}")
+                print(f"Error adding product: {e}")
                 return redirect(url_for('manage_products'))
 
     # Retrieve all products for display
     all_products = Products.query.all()
-    return render_template('products.html', all_products=all_products)
-    
+    return render_template('products.html', all_products=all_products, username=session.get('username'))
+
 # Update user route
 @app.route('/update/<int:sno>', methods=['GET', 'POST'])
 def update_user(sno):
@@ -176,6 +176,59 @@ def delete_user(sno):
         return redirect(url_for('signup'))
 
 
+# Update product route
+# Update product route
+@app.route('/product/update/<int:sno>', methods=['GET', 'POST'])
+def update_product(sno):
+    product = Products.query.get_or_404(sno)
+
+    if request.method == 'POST':
+        product.type = request.form['type']
+        product.product = request.form['product']
+        product.price = request.form['price']
+
+        try:
+            db.session.commit()
+            print("Product updated successfully!")
+            return redirect(url_for('manage_products'))
+        except Exception as e:
+            db.session.rollback()
+            print(f"Error updating product: {e}")
+            return redirect(url_for('update_product', sno=sno))
+
+    return render_template('product_update.html', product=product)
+
+# Delete product route
+@app.route('/product/delete/<int:sno>', methods=['POST'])
+def delete_product(sno):
+    product = Products.query.filter_by(sno=sno).first()
+
+    if product:
+        try:
+            db.session.delete(product)
+            db.session.commit()
+            print("Product deleted successfully!")
+        except Exception as e:
+            db.session.rollback()
+            print(f"Error deleting product: {e}")
+
+    return redirect(url_for('manage_products'))
+
+@app.route('/product/<int:product_id>/quantity', methods=['POST'])
+def update_quantity(product_id):
+    product = Products.query.get_or_404(product_id)
+    action = request.json.get('action')  # "add" or "subtract"
+
+    if action == "add":
+        product.quantity += 1
+    elif action == "subtract" and product.quantity > 0:
+        product.quantity -= 1
+
+    db.session.commit()
+    return jsonify({"quantity": product.quantity, "price": product.price})
+
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -199,7 +252,13 @@ def home():
     username = session.get('username')
     if not username:
         return redirect(url_for('login'))  # Redirect to login if not logged in
-    return render_template('home.html', username=username)
+
+    # Fetch products from the database (assuming a Products model is defined)
+    all_products = Products.query.all()  # Adjust this line to fit your ORM/database setup
+
+    # Render the home template with products and username
+    return render_template('home.html', username=username, all_products=all_products)
+
 
 
 @app.route('/logout')

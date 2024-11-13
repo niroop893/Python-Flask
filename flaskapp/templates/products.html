@@ -48,8 +48,8 @@
                 <td>{{ product.price }}</td>
                 <td>{{ product.date }}</td>
                 <td>
-                    <a href="/update/{{ product.sno }}" class="btn btn-outline-primary mx-2">Update</a>
-                    <form action="/delete/{{ product.sno }}" method="POST" style="display:inline;">
+                    <a href="{{ url_for('update_product', sno=product.sno) }}" class="btn btn-outline-primary mx-2">Update</a>
+                    <form action="{{ url_for('delete_product', sno=product.sno) }}" method="POST" style="display:inline;">
                         <button type="submit" class="btn btn-outline-danger mx-2">Delete</button>
                     </form>
                 </td>
